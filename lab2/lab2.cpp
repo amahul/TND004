@@ -243,17 +243,21 @@ int main() {
 		std::vector<int> A3{ 1, 2, 3, 5, 7, 8 };
 		assert(S3 == Set{ A3 });
 
+
 		S3 = S1 * S2;
 		assert(Set::get_count_nodes() == 14);
+
 
 		// test
 		std::vector<int> A4{ 3 };
 		assert(S3 == Set{ A4 });
 
+
 		S3 = S1 - S2;
 		// test
 		std::vector<int> A5{ 1, 5, 8 };
 		assert(S3 == Set{ A5 });
+
 	}
 
 	assert(Set::get_count_nodes() == 0);

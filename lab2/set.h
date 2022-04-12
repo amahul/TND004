@@ -192,7 +192,7 @@ private:
     friend bool operator==(const Set& S1, const Set& S2) {
         // IMPLEMENT
 
-        return false;  // remove this line
+        return (S2 <= S1 && S1 <= S2);
     }
 
     /** Test whether Set S1 and S2 represent different sets
@@ -204,7 +204,7 @@ private:
     friend bool operator!=(const Set& S1, const Set& S2) {
         // IMPLEMENT
 
-        return false;  // remove this line
+        return (!(S1 == S2));
     }
 
     /** Test whether Set S1 is a strict subset of Set S2
@@ -215,7 +215,12 @@ private:
     friend bool operator<(const Set& S1, const Set& S2) {
         // IMPLEMENT
 
-        return false;  // remove this line
+        if (S1 == S2) { // check that set is not equal, then it is not a proper subset
+            return false;
+        }
+        else {
+            return (S2 <= S1); // check if b is a subset of this set
+        }
     }
 
     /** Overloaded operator+: Set union S1+S2

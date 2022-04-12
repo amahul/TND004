@@ -56,8 +56,9 @@ Set::~Set() {
 	// Member function make_empty() can be used to implement the destructor
 	// IMPLEMENTED
 	make_empty();
-	remove_node(head);
-	remove_node(tail);
+	delete head;
+	delete tail;
+	
 	head = nullptr;
 	tail = nullptr;
 }
@@ -113,17 +114,17 @@ size_t Set::cardinality() const {
 // Return true, if the set is a subset of b, otherwise false
 // a <= b iff every member of a is a member of b
 bool Set::less_than(const Set& b) const {
-	// IMPLEMENT
+	// IMPLEMENTED
 	Node* active = head->next;
-	Node* other = b.head->next;
 
 	// Return false if this set has more values than b
 	if(counter > b.counter) return false;
-	
 	// Compare values
-	while(active != tail && other != b.tail){
-		// If one value does not correspond - return false
-		if(active->value != other->value) return false;
+	while(active != tail){
+		if (!(b.is_member(active->value))) {
+			return false;
+		}
+		active = active->next;
 	}
 
 	return true;  
@@ -132,32 +133,31 @@ bool Set::less_than(const Set& b) const {
 // Modify *this such that it becomes the union of *this with Set S
 // Add to *this all elements in Set S (repeated elements are not allowed)
 Set& Set::operator+=(const Set& S) {
-	// IMPLEMENT
+	// IMPLEMENTED
 
+	// Create nodes to keep track of position
 	Node* p1 = head->next;
 	Node* p2 = S.head->next;
 
-	//For instance, if 𝑅 = {1, 3, 4} and 𝑆 = {1, 2, 4} then 𝑅 ∪ 𝑆 = {1, 2, 3, 4} .
-	//For instance, if p1 = {2, 3, 4, 5, 7, 8} and p2 = {1, 5, 9} then 𝑅 ∪ 𝑆 = {1, 2, 3, 4} .
-
-	while(p1 != tail && p2 != tail){
+	// While node in head and S still has a value
+	while(p1 != tail && p2 != S.tail){
+		
 		// Move in p1 if p1 is smaller than p2
 		if(p1->value < p2->value) p1 = p1->next;
-		// Insert p2->value before p1 is p2->value is smaller
-		// Move in p2
+		// Insert p2->value before p1 is p2->value is smaller and move in p2
 		else if(p1->value > p2->value) {
-			insert_node(p1->prev, p2->value);
+			insert_node(p1, p2->value);
 			p2 = p2->next;
 		}
-		// Move in both
-		else if(p1->value == p2->value){
+		// Equal: Move in both (values already exists in p1)
+		else {
 			p1 = p1->next;
 			p2 = p2->next;
 		}
 	}
 
 	// Insert all remaining values from p2 in p1
-	while(p2 != tail){
+	while(p2 != S.tail){
 		insert_node(tail, p2->value);
 		p2 = p2->next;
 	}
@@ -167,14 +167,62 @@ Set& Set::operator+=(const Set& S) {
 
 // Modify *this such that it becomes the intersection of *this with Set S
 Set& Set::operator*=(const Set& S) {
-	// IMPLEMENT
+	// IMPLEMENTED
+
+	// Create nodes to keep track of position
+	Node* p1 = head->next;
+	Node* p2 = S.head->next;
+
+	// While node in head and S still has a value
+	while (p1 != tail && p2 != S.tail) {
+		
+		// Move in p1 if value is smaller than p2, remove and move p1
+		if (p1->value < p2->value) {
+			p1 = p1->next;
+			remove_node(p1->prev);
+		}
+		// Move in p2 if value is smaller than p1
+		else if (p2->value < p1->value) p2 = p2->next;
+		// Equal: Move in both (values already exists in p1)
+		else {
+			p1 = p1->next;
+			p2 = p2->next;
+		}
+	}
+
+	// remove remaining values in p1
+	while (p1 != tail) {
+		p1 = p1->next;
+		remove_node(p1->prev);
+	}
 
 	return *this;
 }
 
 // Modify *this such that it becomes the Set difference between Set *this and Set S
 Set& Set::operator-=(const Set& S) {
-	// IMPLEMENT
+	// IMPLEMENTED
+
+	// Create nodes to keep track of position
+	Node* p1 = head->next;
+	Node* p2 = S.head->next;
+
+	// While node in head and S still has a value
+	while (p1 != tail && p2 != S.tail) {
+
+		// Move in p1 if p1 is equal to p2
+		if (p1->value > p2->value) {
+			p2 = p2->next;
+		}
+		// Move in p1 if value is smaller than p2
+		else if (p1->value < p2->value) p1 = p1->next;
+		// Equal: Move in both (values already exists in p1)
+		else { 
+			p1 = p1->next;
+			p2 = p2->next;
+			remove_node(p1->prev);
+		}
+	}
 
 	return *this;
 }
@@ -205,7 +253,7 @@ void Set::write_to_stream(std::ostream& os) const {
 
 // Insert a new Node storing val after the Node pointed by p, O(1)
 void Set::insert_node(Node* p, int val) {
-	// IMPLEMENT before Lab1 HA
+	// IMPLEMENTED
 	// s.117-118 i kursbok, eller slide 6 föreläsning 4
 	Node* newNode = new Node(val, p, p->prev); //step 1 and 2
 	p->prev = p->prev->next = newNode; // step 3 and 4
@@ -214,13 +262,10 @@ void Set::insert_node(Node* p, int val) {
 
 // Remove the Node pointed by p, O(1)
 void Set::remove_node(Node* p) {
-	// IMPLEMENT before Lab1 HA
+	// IMPLEMENTED
 	// s.118 i kursbok
-	if (p->next) //if p has a next, repoint p->next->prev to the one node before p (removing from the beginning)
-		p->next->prev = p->prev;
-
-	if (p->prev) //if p has a prev, repoint p->prev->next to the one node after p (removing from the end)
-		p->prev->next = p->next;
+	p->next->prev = p->prev;
+	p->prev->next = p->next;
 
 	delete p;
 	counter--;
