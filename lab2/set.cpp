@@ -55,12 +55,12 @@ void Set::make_empty() {
 Set::~Set() {
 	// Member function make_empty() can be used to implement the destructor
 	// IMPLEMENTED
-	make_empty();
+	make_empty(); //O(n)
 	delete head;
 	delete tail;
 	
-	head = nullptr;
-	tail = nullptr;
+	head = nullptr; //O(1)
+	tail = nullptr; //O(1)
 }
 
 // Copy constructor, O(n)
@@ -73,7 +73,6 @@ Set::Set(const Set& source) : Set{} {  // create an empty list
 		insert_node(tail, copyNode->value);
 		copyNode = copyNode->next;
 	}
-
 }
 
 
@@ -115,19 +114,36 @@ size_t Set::cardinality() const {
 // a <= b iff every member of a is a member of b
 bool Set::less_than(const Set& b) const {
 	// IMPLEMENTED
-	Node* active = head->next;
 
-	// Return false if this set has more values than b
-	if(counter > b.counter) return false;
-	// Compare values
-	while(active != tail){
-		if (!(b.is_member(active->value))) {
-			return false;
+	// Create nodes to keep track of position
+	Node* p1 = head->next;
+	Node* p2 = b.head->next;
+
+	// While node in head and S still has a value
+	while (p1 != tail && p2 != b.tail) {
+
+		// Return false if p1 (this) is smaller than p2
+		if (p1->value < p2->value) return false;
+
+		// Equal: Move in both (values already exists in p1)
+		else if (p1->value == p2->value) {
+			p1 = p1->next;
+			p2 = p2->next;
 		}
-		active = active->next;
+
+		// p2 (b) is smaller than p1
+		else {
+			p2 = p2->next;
+		}
+
 	}
 
-	return true;  
+	// larger values in p1 than in p2
+	if(p1 != tail) {
+		return false;
+	}
+
+	return true;
 }
 
 // Modify *this such that it becomes the union of *this with Set S

@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "set.h"
+#include "vld.h"
 
 int main() {
 	/*****************************************************
