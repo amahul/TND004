@@ -3,7 +3,8 @@
 #include <iostream>
 #include <iomanip>
 #include <cassert>  // used in node.h
-
+#include <iterator>
+#include <vector>
 #include "dsexceptions.h"
 
 // BinarySearchTree class
@@ -43,15 +44,28 @@ public:
     * Constructor from vector
     */
     explicit BinarySearchTree(const std::vector<Comparable>& V) {
-        //Find middle of vector
-        int mid = V.size() / 2;
-        root = V[mid];
-
-        //TODO
-
-        //AVL TREE?
-        //https://www.geeksforgeeks.org/avl-tree-set-1-insertion/
+       // root = new Node{ 10 };
+       root = createBST(std::begin(V), std::end(V), nullptr);
         
+    }
+
+    Node* createBST(typename std::vector<Comparable>::const_iterator first, typename std::vector<Comparable>::const_iterator last, Node* parent) {
+        
+        int n = std::distance(first, last);
+
+        if ( n == 0) return nullptr;
+
+        typename std::vector<Comparable>::const_iterator mid = std::next(first, n/2);
+        Node* midNode = new Node{ *mid, nullptr, nullptr, parent};
+
+        //if(root) std::cout << "root = " << root->element << '\n';
+
+        midNode->left = createBST(first, mid, midNode);
+        midNode->right = createBST(std::next(mid), last, midNode);
+
+
+
+        return midNode;
     }
 
     /**
@@ -115,7 +129,8 @@ public:
         if (isEmpty()) {
             out << "Empty tree";
         } else {
-            inorder(root, out);
+            //inorder(root, out);
+            preorder(root, out);
         }
     }
 
@@ -153,11 +168,18 @@ public:
     *Returns the value stored in the parent of the node storing x
     **/
     const Comparable get_parent(const Comparable& x) const {
+        
+        if (!root) return Comparable{};
+        
         // Get node with value x
         Node* xNode = contains(x, root);
 
         // if xNode exist and it has a parent, return the parents element, otherwise return Comparable{}
-        return(xNode && xNode->parent) ? xNode->parent->element : Comparable{};
+        if (xNode != nullptr) {
+            if (xNode->parent != nullptr) return xNode->parent->element;
+            else return Comparable{};
+        }
+        else return Comparable{};
     }
 
 
@@ -170,11 +192,11 @@ private:
      * t is the node that roots the subtree.
      * Return a pointer to the node storing x.
      */
-    Node *insert(const Comparable &x, Node *t) {
+    Node *insert(const Comparable &x, Node *t) { //Node* parent
         if (t == nullptr) {
-            t = new Node{x, nullptr, nullptr};
+            t = new Node{x, nullptr, nullptr}; //, parent
         } else if (x < t->element) {
-            t->left = insert(x, t->left);
+            t->left = insert(x, t->left); //skippa parent nedanför här
             t->left->parent = t;    //set parent of new node to t
         } else if (t->element < x) {
             t->right = insert(x, t->right);
@@ -302,7 +324,7 @@ private:
    * Private member function to print a subtree rooted at t in sorted order.
    * Pre-order traversal is used
    */
-    void preorder(Node* t, std::ostream& out, int indent = 0) const {
+    void preorder(Node* t, std::ostream& out, int indent = 2) const {
         if (t != nullptr) {
             out << std::setw(indent) << t->element << '\n';
             preorder(t->left, out, indent+2);
