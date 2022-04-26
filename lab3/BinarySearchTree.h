@@ -40,6 +40,21 @@ public:
     }
 
     /**
+    * Constructor from vector
+    */
+    explicit BinarySearchTree(const std::vector<Comparable>& V) {
+        //Find middle of vector
+        int mid = V.size() / 2;
+        root = V[mid];
+
+        //TODO
+
+        //AVL TREE?
+        //https://www.geeksforgeeks.org/avl-tree-set-1-insertion/
+        
+    }
+
+    /**
      * Destructor for the tree
      */
     ~BinarySearchTree() {
@@ -133,6 +148,19 @@ public:
         return Node::count_nodes;
     }
 
+
+    /**
+    *Returns the value stored in the parent of the node storing x
+    **/
+    const Comparable get_parent(const Comparable& x) const {
+        // Get node with value x
+        Node* xNode = contains(x, root);
+
+        // if xNode exist and it has a parent, return the parents element, otherwise return Comparable{}
+        return(xNode && xNode->parent) ? xNode->parent->element : Comparable{};
+    }
+
+
 private:
     Node *root;
 
@@ -147,8 +175,10 @@ private:
             t = new Node{x, nullptr, nullptr};
         } else if (x < t->element) {
             t->left = insert(x, t->left);
+            t->left->parent = t;    //set parent of new node to t
         } else if (t->element < x) {
             t->right = insert(x, t->right);
+            t->right->parent = t;   //set parent of new node to t
         } else {
             ;  // Duplicate; do nothing
         }
@@ -175,6 +205,7 @@ private:
         } else {
             Node *oldNode = t;
             t = (t->left != nullptr) ? t->left : t->right;
+            if (t != nullptr) t->parent = oldNode->parent; // repoint parent till grandparent
             delete oldNode;
         }
         return t;
@@ -184,7 +215,7 @@ private:
      * Private member function to find the smallest item in a subtree t.
      * Return node containing the smallest item.
      */
-    Node *findMin(Node *t) const {
+    Node* findMin(Node* t) const {
         if (t == nullptr) {
             return nullptr;
         }
@@ -200,7 +231,7 @@ private:
      * Private member function to find the largest item in a subtree t.
      * Return node containing the largest item.
      */
-    Node *findMax(Node *t) const {
+    Node* findMax(Node* t) const {
         if (t != nullptr) {
             while (t->right != nullptr) {
                 t = t->right;
@@ -216,7 +247,7 @@ private:
      * Return a pointer to the node storing x, if x is found
      * Otherwise, return nullptr
      */
-    Node *contains(const Comparable &x, Node *t) const {
+    Node* contains(const Comparable &x, Node *t) const {
         if (t == nullptr) {
             return t;
         } else if (x < t->element) {
@@ -268,13 +299,38 @@ private:
     }
 
     /**
+   * Private member function to print a subtree rooted at t in sorted order.
+   * Pre-order traversal is used
+   */
+    void preorder(Node* t, std::ostream& out, int indent = 0) const {
+        if (t != nullptr) {
+            out << std::setw(indent) << t->element << '\n';
+            preorder(t->left, out, indent+2);
+            preorder(t->right, out, indent+2);
+        }
+    }
+
+    /**
      * Private member function to clone subtree.
      */
-    Node *clone(Node *t) const {
+    Node *clone(Node *t, Node* pt = nullptr) const {
         if (t == nullptr) {
             return nullptr;
         } else {
-            return new Node{t->element, clone(t->left), clone(t->right)};
+
+            // Create new node with value of t
+            Node* temp = new Node{t->element};
+
+            // Recursive call for "children", temp is parent
+            temp->left = clone(t->left, temp);
+            temp->right = clone(t->right, temp);
+
+            // Set parent
+            temp->parent = pt;
+
+            return temp;
+
+            //return new Node{t->element, clone(t->left), clone(t->right)};
         }
     }
 };
