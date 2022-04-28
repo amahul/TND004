@@ -5,7 +5,7 @@
 
 #include "BinarySearchTree.h"
 
-//#define TEST_CONSTRUCTOR_FROM_VECTOR
+#define TEST_CONSTRUCTOR_FROM_VECTOR
 
 /* *********************************************
  * Test 2: Constructor from sorted vector

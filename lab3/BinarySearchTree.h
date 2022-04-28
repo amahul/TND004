@@ -7,10 +7,6 @@
 #include <vector>
 #include "dsexceptions.h"
 
-// Include definitions of the nested classes
-#include "node.h"
-#include "iterator.h"
-
 // BinarySearchTree class
 //
 // CONSTRUCTION: zero parameter
@@ -165,6 +161,34 @@ public:
             else return Comparable{};
         }
         else return Comparable{};
+    }
+
+    /**
+    * Returns an iterator to the smallest value in tree
+    **/
+    Iterator begin() {
+        if (isEmpty()) return end();
+
+        return Iterator(nullptr, findMin(root));
+    }
+
+    /**
+    * Returns an iterator
+    **/
+    Iterator end() {       
+
+        return Iterator(nullptr, nullptr);
+    }
+
+
+    /**
+    * Returns an iterator poitning to the Node storing value x
+    **/
+    Iterator find(const Comparable& x) {
+        // Check if tree contains x
+        Node* res = contains(x, root);
+        if (res) return Iterator(nullptr, res);
+        else return end();
     }
 
 
@@ -361,6 +385,7 @@ private:
         return midNode;
     }
 
+
     /**
     * Private member function to find successor of element stored in node t
     * example: seq: {1, 2, 3, 4, 5},  successor to 3 = 4
@@ -408,6 +433,9 @@ private:
         // Returns pointer to the node storing the successor of the value given in node t, 
         return t;
     }
-
+   
 };
 
+// Include definitions of the nested classes
+#include "node.h"
+#include "iterator.h"

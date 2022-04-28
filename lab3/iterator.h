@@ -11,10 +11,10 @@ class BinarySearchTree<Comparable>::Iterator {
 public:
     // Some properties for Iterator  -- so that Iterator can be used with STL-algorithms
     using iterator_category = std::bidirectional_iterator_tag;
-    using difference_type   = std::ptrdiff_t;
-    using value_type        = Comparable;
-    using pointer           = Comparable*;  // or also value_type*
-    using reference         = Comparable&;  // or also value_type&
+    using difference_type = std::ptrdiff_t;
+    using value_type = Comparable;
+    using pointer = Comparable*;  // or also value_type*
+    using reference = Comparable&;  // or also value_type&
 
     /* ****************************************************************** */
 
@@ -32,7 +32,7 @@ public:
         &current->element;
     }
 
-    bool operator==(const Iterator &it) {
+    bool operator==(const Iterator& it) {
         return (current == it.current);
     }
 
@@ -67,9 +67,10 @@ public:
 private:
     Node* current;
     BinarySearchTree* bts = nullptr;
+
     Iterator(BinarySearchTree* p1, Node* p2) : bts{ p1 }, current{ p2 }{
-   };
+    };
 
 
-    template <typename Comparable> // varför igen, krashar annars?
-}   
+    // template <typename Comparable> // varför igen, krashar annars?
+};
