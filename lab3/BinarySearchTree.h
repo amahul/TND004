@@ -3,9 +3,13 @@
 #include <iostream>
 #include <iomanip>
 #include <cassert>  // used in node.h
-#include <iterator>
+#include <iterator> 
 #include <vector>
 #include "dsexceptions.h"
+
+// Include definitions of the nested classes
+#include "node.h"
+#include "iterator.h"
 
 // BinarySearchTree class
 //
@@ -44,28 +48,9 @@ public:
     * Constructor from vector
     */
     explicit BinarySearchTree(const std::vector<Comparable>& V) {
-       // root = new Node{ 10 };
+      
        root = createBST(std::begin(V), std::end(V), nullptr);
         
-    }
-
-    Node* createBST(typename std::vector<Comparable>::const_iterator first, typename std::vector<Comparable>::const_iterator last, Node* parent) {
-        
-        int n = std::distance(first, last);
-
-        if ( n == 0) return nullptr;
-
-        typename std::vector<Comparable>::const_iterator mid = std::next(first, n/2);
-        Node* midNode = new Node{ *mid, nullptr, nullptr, parent};
-
-        //if(root) std::cout << "root = " << root->element << '\n';
-
-        midNode->left = createBST(first, mid, midNode);
-        midNode->right = createBST(std::next(mid), last, midNode);
-
-
-
-        return midNode;
     }
 
     /**
@@ -355,8 +340,74 @@ private:
             //return new Node{t->element, clone(t->left), clone(t->right)};
         }
     }
+
+    /**
+    * Private member function to create a BST from a sorted vector
+    */
+    Node* createBST(typename std::vector<Comparable>::const_iterator first, typename std::vector<Comparable>::const_iterator last, Node* parent) {
+
+        int n = std::distance(first, last);
+
+        if (n == 0) return nullptr;
+
+        typename std::vector<Comparable>::const_iterator mid = std::next(first, n / 2);
+        Node* midNode = new Node{ *mid, nullptr, nullptr, parent };
+
+        //if(root) std::cout << "root = " << root->element << '\n';
+
+        midNode->left = createBST(first, mid, midNode);
+        midNode->right = createBST(std::next(mid), last, midNode);
+
+        return midNode;
+    }
+
+    /**
+    * Private member function to find successor of element stored in node t
+    * example: seq: {1, 2, 3, 4, 5},  successor to 3 = 4
+    */
+    Node* find_successor(Node* t) const {
+
+        // empty tree
+        if (t == nullptr) return nullptr;
+
+        // if the successor doesn't exist return nullptr
+        if (t->parent == nullptr) return nullptr;
+
+        // If t has a node to the right, then that value is bigger than t, find the smallest value in the right branch to get the successor.
+        if (t->right != nullptr) return findMin(t->right);
+
+        // If we don't have a node to the right, then climb back up until the node has a node to the left.
+        while (t->parent != nullptr && t->parent->left == nullptr) {
+            t = t->parent;
+        }
+
+        // Returns pointer to the node storing the successor of the value given in node t, 
+        return t;
+    }
+
+    /**
+    * Private member function to find predecessor of element stored in node t
+    * example: seq: {1, 2, 3, 4, 5},  predecessor to 3 = 2
+    */
+    Node* find_predecessor(Node* t) const {
+
+        // empty tree
+        if (t == nullptr) return nullptr;
+
+        // if the predecessor doesn't exist return nullptr
+        if (t->left == nullptr) return nullptr;
+
+        // If t has a node to the left, then that value is smaller than t, find the largest value in the left branch to get the predecessor.
+        if (t->left != nullptr) return findMax(t->left);
+
+        // If we don't have a node to the left, then climb back up until the node has a node to the right.
+        while (t->parent != nullptr && t->parent->right == nullptr) {
+            t = t->parent;
+        }
+
+        // Returns pointer to the node storing the successor of the value given in node t, 
+        return t;
+    }
+
 };
 
-// Include definitions of the nested classes
-#include "node.h"
-#include "iterator.h"
