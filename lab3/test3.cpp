@@ -18,127 +18,127 @@
 
 void test3() {
 #ifdef TEST_ITERATOR
-    {
-        std::ifstream file{"../code/words.txt"};
+	{
+		std::ifstream file{ "../code/words.txt" };
 
-        if (!file) {
-            std::cout << "Couldn't open file words.txt\n";
-            return;
-        }
+		if (!file) {
+			std::cout << "Couldn't open file words.txt\n";
+			return;
+		}
 
-        // Read all words in the file into a vector  -- words are not unique
-        std::vector<std::string> V{std::istream_iterator<std::string>{file},
-                                   std::istream_iterator<std::string>{}};
-        file.close();
+		// Read all words in the file into a vector  -- words are not unique
+		std::vector<std::string> V{ std::istream_iterator<std::string>{file},
+								   std::istream_iterator<std::string>{} };
+		file.close();
 
-        // Create a tree
-        BinarySearchTree<std::string> t;
-        assert(BinarySearchTree<std::string>::get_count_nodes() == 0);
+		// Create a tree
+		BinarySearchTree<std::string> t;
+		assert(BinarySearchTree<std::string>::get_count_nodes() == 0);
 
-        for (auto j : V) {
-            t.insert(j);
-        }
+		for (auto j : V) {
+			t.insert(j);
+		}
 
-        assert(BinarySearchTree<std::string>::get_count_nodes() == 35);
+		assert(BinarySearchTree<std::string>::get_count_nodes() == 35);
 
-        // Display the tree
-        /*std::cout << "Tree: \n";
-        t.printTree();
-        std::cout << '\n';*/
+		// Display the tree
+		/*std::cout << "Tree: \n";
+		t.printTree();
+		std::cout << '\n';*/
 
-        // Load the expected inorder traversal of the tree
-        file.open("../code/inorder_traversal.txt");
+		// Load the expected inorder traversal of the tree
+		file.open("../code/inorder_traversal.txt");
 
-        if (!file) {
-            std::cout << "Couldn't open file inorder_traversal.txt\n";
-            return;
-        }
+		if (!file) {
+			std::cout << "Couldn't open file inorder_traversal.txt\n";
+			return;
+		}
 
-        std::vector<std::string> inorder{std::istream_iterator<std::string>{file},
-                                         std::istream_iterator<std::string>{}};
-        file.close();
+		std::vector<std::string> inorder{ std::istream_iterator<std::string>{file},
+										 std::istream_iterator<std::string>{} };
+		file.close();
 
-        /**************************************/
-        std::cout << "\nPHASE 0: find\n";
-        /**************************************/
-        {
-            // some words in the tree
-            std::vector<std::string> V1{"airborne", "yelp", "obligations", "unbridled"};
+		/**************************************/
+		std::cout << "\nPHASE 0: find\n";
+		/**************************************/
+		{
+			// some words in the tree
+			std::vector<std::string> V1{ "airborne", "yelp", "obligations", "unbridled" };
 
-            for (auto w : V1) {
-                assert(*t.find(w) == w);
-            }
+			for (auto w : V1) {
+				assert(*t.find(w) == w);
+			}
 
-            std::vector<std::string> V2{"stop", "Sweden"};
+			std::vector<std::string> V2{ "stop", "Sweden" };
 
-            // some words not in the tree
-            for (auto w : V2) {
-                assert(t.find(w) == t.end());
-            }
-        }
+			// some words not in the tree
+			for (auto w : V2) {
+				assert(t.find(w) == t.end());
+			}
+		}
 
-        /****************************************************/
-        std::cout << "\nPHASE 1: operator++, operator*\n";
-        /****************************************************/
-        {
-            std::vector<std::string> V1{};
+		/****************************************************/
+		std::cout << "\nPHASE 1: operator++, operator*\n";
+		/****************************************************/
+		{
+			std::vector<std::string> V1{};
 
-            // Inorder traversal
-            /* for (BinarySearchTree<string>::Iterator it = t.begin(); it != t.end(); ++it) {
-                 V1.push_back(*it);
-             }*/
+			// Inorder traversal
+			//for (BinarySearchTree<string>::Iterator it = t.begin(); it != t.end(); ++it) {
+			//	V1.push_back(*it);
+			//}
 
-            // Inorder traversal
-            for (auto w : t) {
-                V1.push_back(w);
-            }
+			// Inorder traversal
+			for (auto w : t) {
+				V1.push_back(w);
+			}
 
-            assert(V1 == inorder);
-        }
+			assert(V1 == inorder);
+		}
 
-        /****************************************************/
-        std::cout << "\nPHASE 2: operator--, operator*\n";
-        /*****************************************************/
-        {
-            std::string largest{t.findMax()};
+		/****************************************************/
+		std::cout << "\nPHASE 2: operator--, operator*\n";
+		/*****************************************************/
+		{
+			std::string largest{ t.findMax() };
 
-            assert(largest == "yelp");
+			assert(largest == "yelp");
 
-            std::vector<std::string> V1{};
+			std::vector<std::string> V1{};
 
-            // Backwards inorder traversal
-            for (auto it = t.find(largest); it != t.end(); --it) {
-                V1.push_back(*it);
-            }
+			// Backwards inorder traversal
+			for (auto it = t.find(largest); it != t.end(); --it) {
+				V1.push_back(*it);
+			}
 
-            // Sort inorder decreasingly
-            std::sort(inorder.begin(), inorder.end(), std::greater<std::string>());
-            assert(V1 == inorder);
-            std::sort(inorder.begin(), inorder.end());
-        }
+			// Sort inorder decreasingly
+			std::sort(inorder.begin(), inorder.end(), std::greater<std::string>());
+			assert(V1 == inorder);
+			std::sort(inorder.begin(), inorder.end());
+		}
 
-        /*****************************************************************/
-        std::cout << "\nPHASE 3: test iterators with STL algorithms\n";
-        /*****************************************************************/
+		/*****************************************************************/
+		std::cout << "\nPHASE 3: test iterators with STL algorithms\n";
+		/*****************************************************************/
 
-        std::vector<std::string> V1{};
+		std::vector<std::string> V1{};
 
-        // Copy the tree in inorder into a vector
-        std::copy(t.begin(), t.end(), std::back_inserter(V1));
+		// Copy the tree in inorder into a vector
+		std::copy(t.begin(), t.end(), std::back_inserter(V1));
 
-        assert(V1 == inorder);
+		assert(V1 == inorder);
 
-        // Check whether '\' occurs in s
-        auto f = [](const std::string& s) {
-            return std::find(s.begin(), s.end(), '\'') != s.end();
-        };
+		// Check whether '\' occurs in s
+		auto f = [](const std::string& s) {
+			return std::find(s.begin(), s.end(), '\'') != s.end();
+		};
 
-        // Check if there are three words in BST t with char '\''
-        assert(std::count_if(t.begin(), t.end(), f) == 3);
-    }
+		// Check if there are three words in BST t with char '\''
+		assert(std::count_if(t.begin(), t.end(), f) == 3);
+	}
 
-    assert(BinarySearchTree<std::string>::get_count_nodes() == 0);
+	assert(BinarySearchTree<std::string>::get_count_nodes() == 0);
 
-    std::cout << "\nSuccess!!\n";
+	std::cout << "\nSuccess!!\n";
 #endif
 }

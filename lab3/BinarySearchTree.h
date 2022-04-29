@@ -26,414 +26,425 @@
 template <typename Comparable>
 class BinarySearchTree {
 private:
-    struct Node;  // nested class defined in node.h
+	struct Node;  // nested class defined in node.h
 
 public:
-    class Iterator;  // Exercise 2: nested class to be defined in Iterator.h
+	class Iterator;  // Exercise 2: nested class to be defined in Iterator.h
 
-    BinarySearchTree() : root{nullptr} {
-    }
+	BinarySearchTree() : root{ nullptr } {
+	}
 
-    /**
-     * Copy constructor
-     */
-    BinarySearchTree(const BinarySearchTree &rhs) : root{clone(rhs.root)} {
-    }
+	/**
+	 * Copy constructor
+	 */
+	BinarySearchTree(const BinarySearchTree& rhs) : root{ clone(rhs.root) } {
+	}
 
-    /**
-    * Constructor from vector
-    */
-    explicit BinarySearchTree(const std::vector<Comparable>& V) {
-      
-       root = createBST(std::begin(V), std::end(V), nullptr);
-        
-    }
+	/**
+	* Constructor from vector
+	*/
+	explicit BinarySearchTree(const std::vector<Comparable>& V) {
 
-    /**
-     * Destructor for the tree
-     */
-    ~BinarySearchTree() {
-        makeEmpty();
-    }
+		root = createBST(std::begin(V), std::end(V), nullptr);
 
-    /**
-     * Copy assignment: copy and swap idiom
-     */
-    BinarySearchTree &operator=(BinarySearchTree _copy) {
-        std::swap(root, _copy.root);
-        return *this;
-    }
+	}
 
-    /**
-     * Find the smallest item in the tree.
-     * Throw UnderflowException if empty.
-     */
-    const Comparable &findMin() const {
-        if (isEmpty()) {
-            throw UnderflowException{};
-        }
+	/**
+	 * Destructor for the tree
+	 */
+	~BinarySearchTree() {
+		makeEmpty();
+	}
 
-        return findMin(root)->element;
-    }
+	/**
+	 * Copy assignment: copy and swap idiom
+	 */
+	BinarySearchTree& operator=(BinarySearchTree _copy) {
+		std::swap(root, _copy.root);
+		return *this;
+	}
 
-    /**
-     * Find the largest item in the tree.
-     * Throw UnderflowException if empty.
-     */
-    const Comparable &findMax() const {
-        if (isEmpty()) {
-            throw UnderflowException{};
-        }
+	/**
+	 * Find the smallest item in the tree.
+	 * Throw UnderflowException if empty.
+	 */
+	const Comparable& findMin() const {
+		if (isEmpty()) {
+			throw UnderflowException{};
+		}
 
-        return findMax(root)->element;
-    }
+		return findMin(root)->element;
+	}
 
-    /**
-     * Returns true if x is found in the tree.
-     */
-    bool contains(const Comparable &x) const {
-        return (contains(x, root) != nullptr);
-    }
+	/**
+	 * Find the largest item in the tree.
+	 * Throw UnderflowException if empty.
+	 */
+	const Comparable& findMax() const {
+		if (isEmpty()) {
+			throw UnderflowException{};
+		}
 
-    /**
-     * Test if the tree is logically empty.
-     * Return true if empty, false otherwise.
-     */
-    bool isEmpty() const {
-        return root == nullptr;
-    }
+		return findMax(root)->element;
+	}
 
-    /**
-     * Print the tree contents in sorted order.
-     */
-    void printTree(std::ostream &out = std::cout) const {
-        if (isEmpty()) {
-            out << "Empty tree";
-        } else {
-            //inorder(root, out);
-            preorder(root, out);
-        }
-    }
+	/**
+	 * Returns true if x is found in the tree.
+	 */
+	bool contains(const Comparable& x) const {
+		return (contains(x, root) != nullptr);
+	}
 
-    /**
-     * Make the tree logically empty.
-     */
-    void makeEmpty() {
-        root = makeEmpty(root);
-    }
+	/**
+	 * Test if the tree is logically empty.
+	 * Return true if empty, false otherwise.
+	 */
+	bool isEmpty() const {
+		return root == nullptr;
+	}
 
-    /**
-     * Insert x into the tree; duplicates are ignored.
-     */
-    void insert(const Comparable &x) {
-        root = insert(x, root);
-    }
+	/**
+	 * Print the tree contents in sorted order.
+	 */
+	void printTree(std::ostream& out = std::cout) const {
+		if (isEmpty()) {
+			out << "Empty tree";
+		}
+		else {
+			//inorder(root, out);
+			preorder(root, out);
+		}
+	}
 
-    /**
-     * Remove x from the tree. Nothing is done if x is not found.
-     */
-    void remove(const Comparable &x) {
-        root = remove(x, root);
-    }
+	/**
+	 * Make the tree logically empty.
+	 */
+	void makeEmpty() {
+		root = makeEmpty(root);
+	}
 
-    /** Return total number of existing nodes
-     *
-     * Used for debug purposes
-     */
-    static int get_count_nodes() {
-        return Node::count_nodes;
-    }
+	/**
+	 * Insert x into the tree; duplicates are ignored.
+	 */
+	void insert(const Comparable& x) {
+		root = insert(x, root);
+	}
 
+	/**
+	 * Remove x from the tree. Nothing is done if x is not found.
+	 */
+	void remove(const Comparable& x) {
+		root = remove(x, root);
+	}
 
-    /**
-    *Returns the value stored in the parent of the node storing x
-    **/
-    const Comparable get_parent(const Comparable& x) const {
-        
-        if (!root) return Comparable{};
-        
-        // Get node with value x
-        Node* xNode = contains(x, root);
-
-        // if xNode exist and it has a parent, return the parents element, otherwise return Comparable{}
-        if (xNode != nullptr) {
-            if (xNode->parent != nullptr) return xNode->parent->element;
-            else return Comparable{};
-        }
-        else return Comparable{};
-    }
-
-    /**
-    * Returns an iterator to the smallest value in tree
-    **/
-    Iterator begin() {
-        if (isEmpty()) return end();
-
-        return Iterator(nullptr, findMin(root));
-    }
-
-    /**
-    * Returns an iterator
-    **/
-    Iterator end() {       
-
-        return Iterator(nullptr, nullptr);
-    }
+	/** Return total number of existing nodes
+	 *
+	 * Used for debug purposes
+	 */
+	static int get_count_nodes() {
+		return Node::count_nodes;
+	}
 
 
-    /**
-    * Returns an iterator poitning to the Node storing value x
-    **/
-    Iterator find(const Comparable& x) {
-        // Check if tree contains x
-        Node* res = contains(x, root);
-        if (res) return Iterator(nullptr, res);
-        else return end();
-    }
+	/**
+	*Returns the value stored in the parent of the node storing x
+	**/
+	const Comparable get_parent(const Comparable& x) const {
+
+		if (!root) return Comparable{};
+
+		// Get node with value x
+		Node* xNode = contains(x, root);
+
+		// if xNode exist and it has a parent, return the parents element, otherwise return Comparable{}
+		if (xNode != nullptr) {
+			if (xNode->parent != nullptr) return xNode->parent->element;
+			else return Comparable{};
+		}
+		else return Comparable{};
+	}
+
+	/**
+	* Returns an iterator to the smallest value in tree
+	**/
+	Iterator begin() {
+		if (isEmpty()) return end();
+
+		return Iterator(nullptr, findMin(root));
+	}
+
+	/**
+	* Returns an iterator
+	**/
+	Iterator end() {
+
+		return Iterator(nullptr, nullptr);
+	}
+
+
+	/**
+	* Returns an iterator poitning to the Node storing value x
+	**/
+	Iterator find(const Comparable& x) {
+		// Check if tree contains x
+		Node* res = contains(x, root);
+		if (res) return Iterator(nullptr, res);
+		else return end();
+	}
 
 
 private:
-    Node *root;
+	Node* root;
 
-    /**
-     * Private member function to insert into a subtree.
-     * x is the item to insert.
-     * t is the node that roots the subtree.
-     * Return a pointer to the node storing x.
-     */
-    Node *insert(const Comparable &x, Node *t) { //Node* parent
-        if (t == nullptr) {
-            t = new Node{x, nullptr, nullptr}; //, parent
-        } else if (x < t->element) {
-            t->left = insert(x, t->left); //skippa parent nedanför här
-            t->left->parent = t;    //set parent of new node to t
-        } else if (t->element < x) {
-            t->right = insert(x, t->right);
-            t->right->parent = t;   //set parent of new node to t
-        } else {
-            ;  // Duplicate; do nothing
-        }
-        return t;
-    }
+	/**
+	 * Private member function to insert into a subtree.
+	 * x is the item to insert.
+	 * t is the node that roots the subtree.
+	 * Return a pointer to the node storing x.
+	 */
+	Node* insert(const Comparable& x, Node* t) { //Node* parent
+		if (t == nullptr) {
+			t = new Node{ x, nullptr, nullptr }; //, parent
+		}
+		else if (x < t->element) {
+			t->left = insert(x, t->left); //skippa parent nedanför här
+			t->left->parent = t;    //set parent of new node to t
+		}
+		else if (t->element < x) {
+			t->right = insert(x, t->right);
+			t->right->parent = t;   //set parent of new node to t
+		}
+		else {
+			;  // Duplicate; do nothing
+		}
+		return t;
+	}
 
-    /**
-     * Private member function to remove from a subtree.
-     * x is the item to remove.
-     * t is the node that roots the subtree.
-     * Return a pointer to the new root of the subtree that had root x
-     */
-    Node *remove(const Comparable &x, Node *t) {
-        if (t == nullptr) {
-            return t;  // Item not found
-        }
-        if (x < t->element) {
-            t->left = remove(x, t->left);
-        } else if (t->element < x) {
-            t->right = remove(x, t->right);
-        } else if (t->left != nullptr && t->right != nullptr) {  // Two children
-            t->element = findMin(t->right)->element;
-            t->right = remove(t->element, t->right);
-        } else {
-            Node *oldNode = t;
-            t = (t->left != nullptr) ? t->left : t->right;
-            if (t != nullptr) t->parent = oldNode->parent; // repoint parent till grandparent
-            delete oldNode;
-        }
-        return t;
-    }
+	/**
+	 * Private member function to remove from a subtree.
+	 * x is the item to remove.
+	 * t is the node that roots the subtree.
+	 * Return a pointer to the new root of the subtree that had root x
+	 */
+	Node* remove(const Comparable& x, Node* t) {
+		if (t == nullptr) {
+			return t;  // Item not found
+		}
+		if (x < t->element) {
+			t->left = remove(x, t->left);
+		}
+		else if (t->element < x) {
+			t->right = remove(x, t->right);
+		}
+		else if (t->left != nullptr && t->right != nullptr) {  // Two children
+			t->element = findMin(t->right)->element;
+			t->right = remove(t->element, t->right);
+		}
+		else {
+			Node* oldNode = t;
+			t = (t->left != nullptr) ? t->left : t->right;
+			if (t != nullptr) t->parent = oldNode->parent; // repoint parent till grandparent
+			delete oldNode;
+		}
+		return t;
+	}
 
-    /**
-     * Private member function to find the smallest item in a subtree t.
-     * Return node containing the smallest item.
-     */
-    Node* findMin(Node* t) const {
-        if (t == nullptr) {
-            return nullptr;
-        }
-        if (t->left == nullptr) {
-            return t;
-        }
+	/**
+	 * Private member function to find the smallest item in a subtree t.
+	 * Return node containing the smallest item.
+	 */
+	Node* findMin(Node* t) const {
+		if (t == nullptr) {
+			return nullptr;
+		}
+		if (t->left == nullptr) {
+			return t;
+		}
 
-        // Tail recursion can be easily replaced by a loop
-        return findMin(t->left);  // recursive call
-    }
+		// Tail recursion can be easily replaced by a loop
+		return findMin(t->left);  // recursive call
+	}
 
-    /**
-     * Private member function to find the largest item in a subtree t.
-     * Return node containing the largest item.
-     */
-    Node* findMax(Node* t) const {
-        if (t != nullptr) {
-            while (t->right != nullptr) {
-                t = t->right;
-            }
-        }
-        return t;
-    }
+	/**
+	 * Private member function to find the largest item in a subtree t.
+	 * Return node containing the largest item.
+	 */
+	Node* findMax(Node* t) const {
+		if (t != nullptr) {
+			while (t->right != nullptr) {
+				t = t->right;
+			}
+		}
+		return t;
+	}
 
-    /**
-     * Private member function to test if an item is in a subtree.
-     * x is item to search for.
-     * t is the node that roots the subtree.
-     * Return a pointer to the node storing x, if x is found
-     * Otherwise, return nullptr
-     */
-    Node* contains(const Comparable &x, Node *t) const {
-        if (t == nullptr) {
-            return t;
-        } else if (x < t->element) {
-            return contains(x, t->left);
-        } else if (t->element < x) {
-            return contains(x, t->right);
-        } else {
-            return t;  // Match
-        }
-    } // in the course book, this function returns a bool
-	
-    /****** NONRECURSIVE VERSION*************************
-    Node *contains(const Comparable &x, Node *t) const {
-        while (t != nullptr) {
-            if (x < t->element) {
-                t = t->left;
-            } else if (t->element < x) {
-                t = t->right;
-            } else {
-                return t;  // Match
-            }
-        }
-        return t;  // No match
-    }
-    *****************************************************/
+	/**
+	 * Private member function to test if an item is in a subtree.
+	 * x is item to search for.
+	 * t is the node that roots the subtree.
+	 * Return a pointer to the node storing x, if x is found
+	 * Otherwise, return nullptr
+	 */
+	Node* contains(const Comparable& x, Node* t) const {
+		if (t == nullptr) {
+			return t;
+		}
+		else if (x < t->element) {
+			return contains(x, t->left);
+		}
+		else if (t->element < x) {
+			return contains(x, t->right);
+		}
+		else {
+			return t;  // Match
+		}
+	} // in the course book, this function returns a bool
 
-    /**
-     * Private member function to make subtree empty.
-     */
-    Node *makeEmpty(Node *t) {
-        if (t != nullptr) {
-            makeEmpty(t->left);
-            makeEmpty(t->right);
-            delete t;
-        }
-        return nullptr;
-    }
+	/****** NONRECURSIVE VERSION*************************
+	Node *contains(const Comparable &x, Node *t) const {
+		while (t != nullptr) {
+			if (x < t->element) {
+				t = t->left;
+			} else if (t->element < x) {
+				t = t->right;
+			} else {
+				return t;  // Match
+			}
+		}
+		return t;  // No match
+	}
+	*****************************************************/
 
-    /**
-     * Private member function to print a subtree rooted at t in sorted order.
-     * In-order traversal is used
-     */
-    void inorder(Node *t, std::ostream &out) const {
-        if (t != nullptr) {
-            inorder(t->left, out);
-            out << t->element << '\n';
-            inorder(t->right, out);
-        }
-    }
+	/**
+	 * Private member function to make subtree empty.
+	 */
+	Node* makeEmpty(Node* t) {
+		if (t != nullptr) {
+			makeEmpty(t->left);
+			makeEmpty(t->right);
+			delete t;
+		}
+		return nullptr;
+	}
 
-    /**
+	/**
+	 * Private member function to print a subtree rooted at t in sorted order.
+	 * In-order traversal is used
+	 */
+	void inorder(Node* t, std::ostream& out) const {
+		if (t != nullptr) {
+			inorder(t->left, out);
+			out << t->element << '\n';
+			inorder(t->right, out);
+		}
+	}
+
+	/**
    * Private member function to print a subtree rooted at t in sorted order.
    * Pre-order traversal is used
    */
-    void preorder(Node* t, std::ostream& out, int indent = 2) const {
-        if (t != nullptr) {
-            out << std::setw(indent) << t->element << '\n';
-            preorder(t->left, out, indent+2);
-            preorder(t->right, out, indent+2);
-        }
-    }
+	void preorder(Node* t, std::ostream& out, int indent = 2) const {
+		if (t != nullptr) {
+			out << std::setw(indent) << t->element << '\n';
+			preorder(t->left, out, indent + 2);
+			preorder(t->right, out, indent + 2);
+		}
+	}
 
-    /**
-     * Private member function to clone subtree.
-     */
-    Node *clone(Node *t, Node* pt = nullptr) const {
-        if (t == nullptr) {
-            return nullptr;
-        } else {
+	/**
+	 * Private member function to clone subtree.
+	 */
+	Node* clone(Node* t, Node* pt = nullptr) const {
+		if (t == nullptr) {
+			return nullptr;
+		}
+		else {
 
-            // Create new node with value of t
-            Node* temp = new Node{t->element};
+			// Create new node with value of t
+			Node* temp = new Node{ t->element };
 
-            // Recursive call for "children", temp is parent
-            temp->left = clone(t->left, temp);
-            temp->right = clone(t->right, temp);
+			// Recursive call for "children", temp is parent
+			temp->left = clone(t->left, temp);
+			temp->right = clone(t->right, temp);
 
-            // Set parent
-            temp->parent = pt;
+			// Set parent
+			temp->parent = pt;
 
-            return temp;
+			return temp;
 
-            //return new Node{t->element, clone(t->left), clone(t->right)};
-        }
-    }
+			//return new Node{t->element, clone(t->left), clone(t->right)};
+		}
+	}
 
-    /**
-    * Private member function to create a BST from a sorted vector
-    */
-    Node* createBST(typename std::vector<Comparable>::const_iterator first, typename std::vector<Comparable>::const_iterator last, Node* parent) {
+	/**
+	* Private member function to create a BST from a sorted vector
+	*/
+	Node* createBST(typename std::vector<Comparable>::const_iterator first, typename std::vector<Comparable>::const_iterator last, Node* parent) {
 
-        int n = std::distance(first, last);
+		int n = std::distance(first, last);
 
-        if (n == 0) return nullptr;
+		if (n == 0) return nullptr;
 
-        typename std::vector<Comparable>::const_iterator mid = std::next(first, n / 2);
-        Node* midNode = new Node{ *mid, nullptr, nullptr, parent };
+		typename std::vector<Comparable>::const_iterator mid = std::next(first, n / 2);
+		Node* midNode = new Node{ *mid, nullptr, nullptr, parent };
 
-        //if(root) std::cout << "root = " << root->element << '\n';
+		//if(root) std::cout << "root = " << root->element << '\n';
 
-        midNode->left = createBST(first, mid, midNode);
-        midNode->right = createBST(std::next(mid), last, midNode);
+		midNode->left = createBST(first, mid, midNode);
+		midNode->right = createBST(std::next(mid), last, midNode);
 
-        return midNode;
-    }
+		return midNode;
+	}
 
 
-    /**
-    * Private member function to find successor of element stored in node t
-    * example: seq: {1, 2, 3, 4, 5},  successor to 3 = 4
-    */
-    Node* find_successor(Node* t) const {
+	/**
+	* Private member function to find successor of element stored in node t
+	* example: seq: {1, 2, 3, 4, 5},  successor to 3 = 4
+	*/
+	Node* find_successor(Node* t) const {
+		// empty tree
+		if (t == nullptr) return nullptr;
 
-        // empty tree
-        if (t == nullptr) return nullptr;
+		// if the successor doesn't exist return nullptr
+		//if (t->parent == nullptr) return nullptr;
 
-        // if the successor doesn't exist return nullptr
-        if (t->parent == nullptr) return nullptr;
+		// If t has a node to the right, then that value is bigger than t, find the smallest value in the right branch to get the successor.
+		if (t->right != nullptr) return findMin(t->right);
 
-        // If t has a node to the right, then that value is bigger than t, find the smallest value in the right branch to get the successor.
-        if (t->right != nullptr) return findMin(t->right);
+		// DEBUG: går aldrig in i while-loopen, fast nu gör den det????
+		// If we don't have a node to the right, then climb back up until the node has a node to the left.
+		while (t->parent != nullptr && t != t->parent->left) {
+			t = t->parent;
+		}
 
-        // If we don't have a node to the right, then climb back up until the node has a node to the left.
-        while (t->parent != nullptr && t->parent->left == nullptr) {
-            t = t->parent;
-        }
+		// Returns pointer to the node storing the successor of the value given in node t, 
+		return t = t->parent;
+	}
 
-        // Returns pointer to the node storing the successor of the value given in node t, 
-        return t;
-    }
+	/**
+	* Private member function to find predecessor of element stored in node t
+	* example: seq: {1, 2, 3, 4, 5},  predecessor to 3 = 2
+	*/
+	Node* find_predecessor(Node* t) const {
 
-    /**
-    * Private member function to find predecessor of element stored in node t
-    * example: seq: {1, 2, 3, 4, 5},  predecessor to 3 = 2
-    */
-    Node* find_predecessor(Node* t) const {
+		// empty tree
+		if (t == nullptr) return nullptr;
 
-        // empty tree
-        if (t == nullptr) return nullptr;
+		// if the predecessor doesn't exist return nullptr
+		if (t->left == nullptr) return nullptr;
 
-        // if the predecessor doesn't exist return nullptr
-        if (t->left == nullptr) return nullptr;
+		// If t has a node to the left, then that value is smaller than t, find the largest value in the left branch to get the predecessor.
+		if (t->left != nullptr) return findMax(t->left);
 
-        // If t has a node to the left, then that value is smaller than t, find the largest value in the left branch to get the predecessor.
-        if (t->left != nullptr) return findMax(t->left);
+		// If we don't have a node to the left, then climb back up until the node has a node to the right.
+		while (t->parent != nullptr && t != t->parent->right) {
+			t = t->parent;
+		}
 
-        // If we don't have a node to the left, then climb back up until the node has a node to the right.
-        while (t->parent != nullptr && t->parent->right == nullptr) {
-            t = t->parent;
-        }
+		// Returns pointer to the node storing the successor of the value given in node t, 
+		return t = t->parent;
+	}
 
-        // Returns pointer to the node storing the successor of the value given in node t, 
-        return t;
-    }
-   
 };
 
 // Include definitions of the nested classes
