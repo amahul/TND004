@@ -9,6 +9,7 @@
 #include <cassert>  //assert
 
 #include "BinarySearchTree.h"
+#include "vld.h" //Memory leak check
 
 #define TEST_ITERATOR
 
@@ -146,6 +147,6 @@ void test3() {
 
 	assert(BinarySearchTree<std::string>::get_count_nodes() == 0);
 
-	std::cout << "\nSuccess!!\n";
+	std::cout << "\nSuccess!!\n\n\n";
 #endif
 }

@@ -26,6 +26,7 @@ public:
 
 	/**
 	* Returns the value of node
+	* O(1)
 	*/
 	Comparable& operator*() {
 		return current->element;
@@ -33,6 +34,7 @@ public:
 
 	/**
 	* Returns a pointer to current node
+	* O(1)
 	*/
 	Comparable* operator->() {
 		return &current->element;
@@ -54,12 +56,15 @@ public:
 
 	/**
 	* Returns the node with closest larger value
+	* Pre-increment ++a
+	* find_successor O(n)
 	*/
 	Iterator& operator++() {
 		current = bst->find_successor(current);
 		return *this;
 	}
 
+	// Pos-increment a++, sparar det vi har innan, går vidare, returnar det vi hade innan
 	Iterator operator++(int) {
 		Iterator result = *this;
 		this->operator++();
@@ -68,12 +73,14 @@ public:
 
 	/**
 	* Returns the node with closest smaller value
+	* Pre-decrement
+	* find_predecessor O(n)
 	*/
 	Iterator& operator--() {
 		current = bst->find_predecessor(current);
 		return *this;
 	}
-
+	//Pos-decrement
 	Iterator operator--(int) {
 		Iterator result = *this;
 		this->operator--();

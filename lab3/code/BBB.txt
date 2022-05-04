@@ -166,9 +166,9 @@ forcing                  1
 former                   1
 found                    1
 founder                  1
-four-year                1
-free-speech              1
+fouryear                 1
 freedom                  1
+freespeech               1
 from                     4
 fully                    1
 g                        1
@@ -193,8 +193,8 @@ he                       2
 healthy                  1
 hegemony                 1
 here                     1
-high-speed               1
 highly                   1
+highspeed                1
 history                  1
 hole                     1
 home                     1
@@ -242,7 +242,7 @@ keys                     1
 kingdom                  1
 know                     1
 knows                    1
-kong-based               1
+kongbased                1
 lack                     1
 largest                  1
 lead                     1
@@ -325,7 +325,7 @@ policies                 1
 policy                   1
 political                5
 politicized              2
-post-google              1
+postgoogle               1
 potential                1
 power                    1
 predicted                1
@@ -396,7 +396,7 @@ smooth                   1
 so                       1
 social                   1
 society                  1
-soft-power               1
+softpower                1
 software                 1
 some                     4
 sophisticated            1
@@ -431,7 +431,7 @@ their                    5
 they                     7
 think                    1
 thinking                 1
-third-rail               1
+thirdrail                1
 this                     6
 those                    2
 though                   1

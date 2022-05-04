@@ -36,6 +36,7 @@ public:
 
 	/**
 	 * Copy constructor
+	 * O(1)
 	 */
 	BinarySearchTree(const BinarySearchTree& rhs) : root{ clone(rhs.root) } {
 	}
@@ -51,6 +52,7 @@ public:
 
 	/**
 	 * Destructor for the tree
+	 * O(n), goes through the entire tree and removes everything
 	 */
 	~BinarySearchTree() {
 		makeEmpty();
@@ -58,6 +60,7 @@ public:
 
 	/**
 	 * Copy assignment: copy and swap idiom
+	 * O(1)
 	 */
 	BinarySearchTree& operator=(BinarySearchTree _copy) {
 		std::swap(root, _copy.root);
@@ -67,6 +70,8 @@ public:
 	/**
 	 * Find the smallest item in the tree.
 	 * Throw UnderflowException if empty.
+	 * O(1) if it's empty
+	 * O(n) otherwise
 	 */
 	const Comparable& findMin() const {
 		if (isEmpty()) {
@@ -79,6 +84,8 @@ public:
 	/**
 	 * Find the largest item in the tree.
 	 * Throw UnderflowException if empty.
+	 * O(1) if it's empty
+	 * O(n) otherwise
 	 */
 	const Comparable& findMax() const {
 		if (isEmpty()) {
@@ -90,6 +97,7 @@ public:
 
 	/**
 	 * Returns true if x is found in the tree.
+	 * O(n)
 	 */
 	bool contains(const Comparable& x) const {
 		return (contains(x, root) != nullptr);
@@ -98,6 +106,7 @@ public:
 	/**
 	 * Test if the tree is logically empty.
 	 * Return true if empty, false otherwise.
+	 * O(1)
 	 */
 	bool isEmpty() const {
 		return root == nullptr;
@@ -105,6 +114,7 @@ public:
 
 	/**
 	 * Print the tree contents in sorted order.
+	 * O(n)
 	 */
 	void printTree(std::ostream& out = std::cout) const {
 		if (isEmpty()) {
@@ -118,6 +128,7 @@ public:
 
 	/**
 	 * Make the tree logically empty.
+	 * O(n)
 	 */
 	void makeEmpty() {
 		root = makeEmpty(root);
@@ -125,6 +136,8 @@ public:
 
 	/**
 	 * Insert x into the tree; duplicates are ignored.
+	 * Worst-case: O(n)
+	 * Best-case: O(1)
 	 */
 	void insert(const Comparable& x) {
 		root = insert(x, root);
@@ -132,14 +145,17 @@ public:
 
 	/**
 	 * Remove x from the tree. Nothing is done if x is not found.
+	 * Worst-case: O(n)
+	 * Best-case: O(1)
 	 */
 	void remove(const Comparable& x) {
 		root = remove(x, root);
 	}
 
-	/** Return total number of existing nodes
-	 *
+	/** 
+	 * Return total number of existing nodes
 	 * Used for debug purposes
+	 * O(1)
 	 */
 	static int get_count_nodes() {
 		return Node::count_nodes;
@@ -147,7 +163,8 @@ public:
 
 
 	/**
-	*Returns the value stored in the parent of the node storing x
+	* Returns the value stored in the parent of the node storing x
+	* O(n)
 	**/
 	const Comparable get_parent(const Comparable& x) const {
 
@@ -166,6 +183,7 @@ public:
 
 	/**
 	* Returns an iterator to the smallest value in tree
+	* O(n) since findMin = O(n)
 	**/
 	Iterator begin() {
 		if (isEmpty()) return end();
@@ -175,6 +193,7 @@ public:
 
 	/**
 	* Returns an iterator
+	* O(1)
 	**/
 	Iterator end() {
 
@@ -184,6 +203,7 @@ public:
 
 	/**
 	* Returns an iterator poitning to the Node storing value x
+	* O(n) since contains = O(n)
 	**/
 	Iterator find(const Comparable& x) {
 		// Check if tree contains x
@@ -201,6 +221,7 @@ private:
 	 * x is the item to insert.
 	 * t is the node that roots the subtree.
 	 * Return a pointer to the node storing x.
+	 * O(n)
 	 */
 	Node* insert(const Comparable& x, Node* t) { //Node* parent
 		if (t == nullptr) {
@@ -225,6 +246,7 @@ private:
 	 * x is the item to remove.
 	 * t is the node that roots the subtree.
 	 * Return a pointer to the new root of the subtree that had root x
+	 * O(n)
 	 */
 	Node* remove(const Comparable& x, Node* t) {
 		if (t == nullptr) {
@@ -252,6 +274,7 @@ private:
 	/**
 	 * Private member function to find the smallest item in a subtree t.
 	 * Return node containing the smallest item.
+	 * O(n)
 	 */
 	Node* findMin(Node* t) const {
 		if (t == nullptr) {
@@ -268,6 +291,7 @@ private:
 	/**
 	 * Private member function to find the largest item in a subtree t.
 	 * Return node containing the largest item.
+	 * O(n)
 	 */
 	Node* findMax(Node* t) const {
 		if (t != nullptr) {
@@ -284,6 +308,7 @@ private:
 	 * t is the node that roots the subtree.
 	 * Return a pointer to the node storing x, if x is found
 	 * Otherwise, return nullptr
+	 * O(n)
 	 */
 	Node* contains(const Comparable& x, Node* t) const {
 		if (t == nullptr) {
@@ -317,6 +342,7 @@ private:
 
 	/**
 	 * Private member function to make subtree empty.
+	 * O(n)
 	 */
 	Node* makeEmpty(Node* t) {
 		if (t != nullptr) {
@@ -330,6 +356,7 @@ private:
 	/**
 	 * Private member function to print a subtree rooted at t in sorted order.
 	 * In-order traversal is used
+	 * O(n)
 	 */
 	void inorder(Node* t, std::ostream& out) const {
 		if (t != nullptr) {
@@ -342,6 +369,7 @@ private:
 	/**
    * Private member function to print a subtree rooted at t in sorted order.
    * Pre-order traversal is used
+   * O(n)
    */
 	void preorder(Node* t, std::ostream& out, int indent = 2) const {
 		if (t != nullptr) {
@@ -353,6 +381,7 @@ private:
 
 	/**
 	 * Private member function to clone subtree.
+	 * O(n)
 	 */
 	Node* clone(Node* t, Node* pt = nullptr) const {
 		if (t == nullptr) {
@@ -378,6 +407,7 @@ private:
 
 	/**
 	* Private member function to create a BST from a sorted vector
+	* O(n)
 	*/
 	Node* createBST(typename std::vector<Comparable>::const_iterator first, typename std::vector<Comparable>::const_iterator last, Node* parent) {
 
@@ -409,7 +439,6 @@ private:
 		// If t has a node to the right, then that value is bigger than t, find the smallest value in the right branch to get the successor.
 		if (t->right != nullptr) return findMin(t->right);
 
-		// DEBUG: går aldrig in i while-loopen, fast nu gör den det????
 		// If we don't have a node to the right, then climb back up until the node has a node to the left.
 
 		Node* child = t;
