@@ -74,7 +74,6 @@ void Digraph::uwsssp(int s) const {
 	assert(s >= 1 && s <= size);
 
 	// *** TODO ***
-
 	std::queue<int> Q;
 
 	// O(n)
@@ -96,9 +95,8 @@ void Digraph::uwsssp(int s) const {
 		// Loop through every vertex u adjacent to v (intilliggande noder till v)
 		for (auto it = table[v].begin(); it != table[v].end(); ++it) {
 			int u = it->tail; // u is a vertex adjacent to v
-			std::cout << "Value of dist: " << dist[u] << std::endl;
-			if (dist[u] == inf) { //if dist[u] is inf it hasn't been visited yet
-				std::cout << "Vertex has not yet been visited" << std::endl;
+			
+			if (dist[u] == inf) { //if dist[u] is inf it hasn't been visited yet			
 				dist[u] = dist[v] + 1;
 				path[u] = v;
 				Q.push(u);
@@ -186,22 +184,26 @@ void Digraph::printTree() const {
 // Hint: consider using recursion
 void Digraph::printPath(int t) const {
 	assert(t >= 1 && t <= size);
+	
+	// Call printHelp for source
+	printHelp(t);
+	
+	// Print distance in end
+	std::cout << "(" << dist[t] << ")"; 
+}
 
-	// *** TODO ***
 
-	//std::cout << "(" << dist[t] << ")";
+void Digraph::printHelp(int t) const {
 	// Print and return if we are at source
 	if (path[t] == 0) {
 		std::cout << " " << t << " ";
 
 		return;
 	}
-
-	std::cout << "(" << dist[t] << ")"; // TODO få på rätt plats
-
+	
 	// Recursive call
-	printPath(path[t]);
-
+	printHelp(path[t]);
+	// Print value
 	std::cout << " " << t << " ";
-
+	
 }

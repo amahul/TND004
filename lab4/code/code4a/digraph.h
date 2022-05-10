@@ -45,6 +45,9 @@ public:
 	// print shortest path from s to t and the corresponding path length
 	void printPath(int t) const;
 
+	// Recursive print function
+	void printHelp(int t) const;
+
 private:
 	// -- DATA MEMBERS
 	std::vector<std::list<Edge>> table;  // table of adjacency lists

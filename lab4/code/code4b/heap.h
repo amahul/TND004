@@ -15,6 +15,11 @@ public:
     explicit Heap() : A(1) {  // slot zero is not used
     }
 
+    // Copy constructor
+    explicit Heap(std::vector<Comparable> &V) : A(V) {  // slot zero is not used
+        heapify();
+    }
+
     // -- MEMBER FUNCTIONS
 
     void makeEmpty() {
@@ -29,6 +34,7 @@ public:
     void insert(const Comparable x);
 
     Comparable deleteMin();
+    void heapify();
 
 private:
     // -- Private MEMBER FUNCTIONS
@@ -94,4 +100,13 @@ void Heap<Comparable>::percolateDown(size_t i) {
         }
     }
     A[i] = temp;
+}
+
+template <class Comparable>
+void Heap<Comparable>::heapify() {
+    assert(A.size() >= 1);
+
+    for (int i = (A.size()-1) / 2; i >= 1; --i) {
+        percolateDown(i);
+    }
 }
