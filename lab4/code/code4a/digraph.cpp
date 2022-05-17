@@ -73,10 +73,11 @@ void Digraph::removeEdge(const Edge& e) {
 void Digraph::uwsssp(int s) const {
 	assert(s >= 1 && s <= size);
 
-	// *** TODO ***
+	// *** IMPLEMENTED ***
 	std::queue<int> Q;
 
 	// O(n)
+	// Loop through all slots and set initial value
 	for (int i = 1; i <= size; i++) {
 		dist[i] = inf; // record distance
 		path[i] = 0; // record path
@@ -95,7 +96,7 @@ void Digraph::uwsssp(int s) const {
 		// Loop through every vertex u adjacent to v (intilliggande noder till v)
 		for (auto it = table[v].begin(); it != table[v].end(); ++it) {
 			int u = it->tail; // u is a vertex adjacent to v
-			
+
 			if (dist[u] == inf) { //if dist[u] is inf it hasn't been visited yet			
 				dist[u] = dist[v] + 1;
 				path[u] = v;
@@ -110,8 +111,9 @@ void Digraph::uwsssp(int s) const {
 void Digraph::pwsssp(int s) const {
 	assert(s >= 1 && s <= size);
 
-	// *** TODO ***
+	// *** IMPLEMENTED ***
 	// O(n)
+	// Loop through all slots and set initial value
 	for (int i = 1; i <= size; i++) {
 		dist[i] = inf; // record distance
 		path[i] = 0; // record path
@@ -123,7 +125,7 @@ void Digraph::pwsssp(int s) const {
 	int v = s;
 
 	while (true) {
-
+		// Loop through every vertex u adjacent to v (intilliggande noder till v)
 		for (auto it = table[v].begin(); it != table[v].end(); ++it) {
 			int u = it->tail; // u is a vertex adjacent to v
 			if (done[u] == false && dist[u] > dist[v] + it->weight) { //if dist[u] is inf it hasn't been visited yet
@@ -136,7 +138,7 @@ void Digraph::pwsssp(int s) const {
 
 		// Loop through all vertices
 		for (int i = 1; i <= size; i++) {
-			// Check if vertice is not visited ad distance is smaller than previous smallest
+			// Check if vertice is not visited and distance is smaller than previous smallest
 			if (!done[i] && dist[i] < distMin) {
 				// Update smallest distance
 				distMin = dist[i];
@@ -184,12 +186,12 @@ void Digraph::printTree() const {
 // Hint: consider using recursion
 void Digraph::printPath(int t) const {
 	assert(t >= 1 && t <= size);
-	
+
 	// Call printHelp for source
 	printHelp(t);
-	
+
 	// Print distance in end
-	std::cout << "(" << dist[t] << ")"; 
+	std::cout << "(" << dist[t] << ")";
 }
 
 
@@ -200,10 +202,10 @@ void Digraph::printHelp(int t) const {
 
 		return;
 	}
-	
+
 	// Recursive call
 	printHelp(path[t]);
 	// Print value
 	std::cout << " " << t << " ";
-	
+
 }
